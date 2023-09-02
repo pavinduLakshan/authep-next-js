@@ -1,0 +1,6 @@
+{
+    "IdentityServerEndpointContextURL": "https://localhost:9443",
+    "EnableRecoveryEndpoint": true,
+    "EnableSelfSignUpEndpoint": true,
+    "reCaptchaKey": ""
+}
