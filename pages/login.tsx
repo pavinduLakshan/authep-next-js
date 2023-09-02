@@ -1,13 +1,24 @@
 import React, { useEffect } from 'react';
 import { BasicAuth } from '../components/login/basic-auth';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, [
+        'common',
+        'footer',
+      ])),
+      // Will be passed to the page component as props
+    },
+  }
+}
 
 const Login = () => {
 
-    const params = new URLSearchParams(global?.window && window.location.search);
-
     return (
         <div>
-          <p>Login</p> 
+          <p>Sign In</p> 
           <BasicAuth /> 
         </div>
     );

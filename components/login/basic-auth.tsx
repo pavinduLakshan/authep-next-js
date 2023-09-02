@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { getInitParameter, useInitUrl } from "../../init-url";
 import { useSearchParams } from "next/navigation";
 import { IdentityCoreConstants } from "../../classes/IdentityCoreConstants";
+import { useTranslation } from 'next-i18next'
 
 const isBackChannelBasicAuth = false;
 
@@ -45,6 +46,11 @@ const commonauthURL = "https://localhost:9443/commonauth";
 export const BasicAuth = () => {
 
     const searchParams = useSearchParams();
+
+    const { t: i18n } = useTranslation('common')
+
+    // TODO: get the impl from login.jsp and update accordingly.
+    const usernameIdentifier: string = "";
 
     const { samlssoURL, oauth2AuthorizeURL } = useInitUrl();
 
@@ -182,26 +188,26 @@ export const BasicAuth = () => {
             if (searchParams.get("lockedReason") === "AdminInitiated") {
                 return (
                     <div className="ui visible negative message" id="error-msg" data-testid="login-page-error-message">
-                        i18n(error.user.account.locked.admin.initiated)
+                        {i18n("error.user.account.locked.admin.initiated")}
                     </div>
                 )
             } else {
                 return (
                     <div className="ui visible negative message" id="error-msg" data-testid="login-page-error-message">
-                       i18n(error.user.account.locked.incorrect.login.attempts)
+                       {i18n("error.user.account.locked.incorrect.login.attempts")}
                     </div>
                 )
             }
         } else if (Boolean(loginFailed) && IdentityCoreConstants.USER_ACCOUNT_NOT_CONFIRMED_ERROR_CODE !== errorCode) {
             return (
                 <div className="ui visible negative message" id="error-msg" data-testid="login-page-error-message">
-                    i18n(errorMessage)
+                    {i18n("errorMessage")}
                 </div>
             )
         } else if (searchParams.get("authz_failure") === 'true'){
             return (
                 <div className="ui visible negative message" id="error-msg" data-testid="login-page-error-message">
-                    i18n(unauthorized.to.login)
+                    {i18n("unauthorized.to.login")}
                 </div>
             )
         } else { 
@@ -221,9 +227,9 @@ export const BasicAuth = () => {
                             method="post" 
                             id="resendForm"
                         >
-                            i18n(errorMessage)
+                            {i18n("errorMessage")}
                             <div className="ui divider hidden"></div>
-                            i18n(no.confirmation.mail)
+                            {i18n("no.confirmation.mail")}
 
                             <button id="registerLink"
                                 className="resend-button g-recaptcha"
@@ -232,7 +238,7 @@ export const BasicAuth = () => {
                                 data-action="resendConfirmation"
                                 data-testid="login-page-resend-confirmation-email-link"
                             >
-                                i18n(resend.mail)
+                                {i18n("resend.mail")}
                             </button>
                         </form>
                     </div>
@@ -288,7 +294,7 @@ export const BasicAuth = () => {
     
                 {searchParams.get("passwordReset") === 'true' && (
                     <div className="ui visible positive message" data-testid="password-reset-success-message">
-                        i18n(Updated.the.password.successfully)
+                        {i18n("Updated.the.password.successfully")}
                     </div>
                 )}
     
@@ -302,7 +308,7 @@ export const BasicAuth = () => {
                                     value={username}
                                     name="username"
                                     tabIndex={1}
-                                    placeholder="i18n(usernameLabel)"
+                                    placeholder={i18n("usernameLabel")}
                                     data-testid="login-page-username-input"
                                     onChange={e => setUsername(e.target.value)}
                                     required 
@@ -333,7 +339,7 @@ export const BasicAuth = () => {
                             onChange={e => setPassword(e.target.value)}
                             autoComplete="off"
                             tabIndex={2}
-                            placeholder="i18n(password)"
+                            placeholder={i18n("password")}
                             data-testid="login-page-password-input"
                             style={{
                                 paddingRight: "2.3em !important"
@@ -422,24 +428,24 @@ export const BasicAuth = () => {
         {
             (isRecoveryEPAvailable && (isUsernameRecoveryEnabledInTenant || isPasswordRecoveryEnabledInTenant)) && (
                 <div className="field">
-                    i18n(forgot.username.password)
+                    {i18n("forgot.username.password")}{" "}
                             
                     {
                         (!isIdentifierFirstLogin(searchParams.get("inputType") || "") && isUsernameRecoveryEnabledInTenant) && (
                         <a
                             id="usernameRecoverLink"
                             tabIndex={5}
-                            href="<%=StringEscapeUtils.escapeHtml4(getRecoverAccountUrl(identityMgtEndpointContext, urlEncodedURL, true, urlParameters))%>"
+                            href={getRecoverAccountUrl(identityMgtEndpointContext, urlEncodedURL, true, urlParameters)}
                             data-testid="login-page-username-recovery-button"
                         >
-                            i18n(forgot.username)
+                            {i18n("forgot.username")}
                         </a>
                         )
                     }
 
                     {
                         (!isIdentifierFirstLogin(searchParams.get("inputType") || "") && isUsernameRecoveryEnabledInTenant && isPasswordRecoveryEnabledInTenant) &&
-                        <p>i18n(forgot.username.password.or)</p>
+                        <span>{" "}{i18n("forgot.username.password.or")}{" "}</span>
                     }
                             
                     {
@@ -447,10 +453,10 @@ export const BasicAuth = () => {
                             <a
                                 id="passwordRecoverLink"
                                 tabIndex={6}
-                                href="<%=StringEscapeUtils.escapeHtml4(getRecoverAccountUrlWithUsername(identityMgtEndpointContext, urlEncodedURL, false, urlParameters, usernameIdentifier))%>"
+                                href={getRecoverAccountUrlWithUsername(identityMgtEndpointContext, urlEncodedURL, false, urlParameters, usernameIdentifier)}
                                 data-testid="login-page-password-recovery-button"
                             >
-                                i18n(forgot.password)
+                                {i18n("forgot.password")}
                             </a>
                         )
                     }
@@ -467,7 +473,7 @@ export const BasicAuth = () => {
                     onClick={goBack} 
                     data-testid="login-page-back-button"
                 >
-                    i18n(sign.in.different.account)
+                    {i18n("sign.in.different.account")}
                 </a>
             </div>
         )}     
@@ -484,7 +490,7 @@ export const BasicAuth = () => {
                 name="chkRemember"
                 data-testid="login-page-remember-me-checkbox"
             />
-            <label>i18n(remember.me)</label>
+            <label>{i18n("remember.me")}</label>
         </div>
     </div>
 
@@ -497,15 +503,15 @@ export const BasicAuth = () => {
     <div className="ui divider hidden" />
 
     <div className="cookie-policy-message" data-testid="login-page-policy-messages">
-        i18n(privacy.policy.cookies.short.description)
+        {i18n("privacy.policy.cookies.short.description")}{" "}
         <a href="cookie_policy.do" target="policy-pane" data-testid="login-page-cookie-policy-link">
-            i18n(privacy.policy.cookies)
+            {i18n("privacy.policy.cookies")}
         </a>
-        i18n(privacy.policy.for.more.details)
+        {i18n("privacy.policy.for.more.details")}
         <br /><br />
-        i18n(privacy.policy.privacy.short.description)
+        {i18n("privacy.policy.privacy.short.description")}
         <a href="privacy_policy.do" target="policy-pane" data-testid="login-page-privacy-policy-link">
-            i18n(privacy.policy.general)
+            {i18n("privacy.policy.general")}
         </a>
     </div>
 
@@ -518,7 +524,7 @@ export const BasicAuth = () => {
                 tabIndex={4}
                 type="submit"
             >
-                i18n(continue)
+                {i18n("continue")}
             </button>
         </div>
         <div className="column buttons">
@@ -537,7 +543,7 @@ export const BasicAuth = () => {
                 role="button"
                 data-testid="login-page-create-account-button"
             >
-                i18n(create.account)
+                {i18n("create.account")}
             </button>
             ) 
             }
